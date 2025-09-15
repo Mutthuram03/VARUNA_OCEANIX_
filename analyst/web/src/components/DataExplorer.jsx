@@ -16,7 +16,7 @@ import {
   RefreshCw,
   Download,
 } from "lucide-react";
-import { HazardReportService } from "../../firebase/services.js";
+import { HazardReportService } from "../firebase/services";
 
 export default function DataExplorer({ darkMode }) {
   const [data, setData] = useState([]);
