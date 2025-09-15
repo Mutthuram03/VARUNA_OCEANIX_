@@ -1,0 +1,82 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+             request.auth.token.email in ['admin@varuna.com', 'admin@incois.gov.in', 'admin@incois.com'];
+    }
+
+    function isAnalyst() {
+      return isAuthenticated() &&
+             (request.auth.token.email in ['analyst@varuna.com', 'analyst@incois.gov.in'] ||
+              isAdmin());
+    }
+
+    function isValidHazardReport() {
+      return request.resource.data.keys().hasAll(['hazardType', 'location', 'createdAt']) &&
+             request.resource.data.hazardType is string &&
+             request.resource.data.location is map &&
+             request.resource.data.location.keys().hasAll(['latitude', 'longitude']);
+    }
+
+    function isValidAlert() {
+      return request.resource.data.keys().hasAll(['title', 'message', 'severity', 'active', 'createdAt']) &&
+             request.resource.data.active is bool;
+    }
+
+    // Hazard Reports Collection
+    // - Anonymous users can create and read all reports (public viewing)
+    // - Authenticated users can read their own reports
+    // - Admins and analysts can read/update/delete all reports
+    match /hazardReports/{reportId} {
+      allow create: if isValidHazardReport();
+      allow read: if true; // Public read access for all hazard reports
+      allow update: if isAuthenticated() && (isAdmin() || isAnalyst());
+      allow delete: if isAuthenticated() && isAdmin();
+    }
+
+    // Alerts Collection
+    // - Everyone can read active alerts
+    // - Admins can create, update, and delete alerts
+    match /alerts/{alertId} {
+      allow read: if true; // Public read for active alerts
+      allow create: if isAuthenticated() && isAdmin() && isValidAlert();
+      allow update: if isAuthenticated() && isAdmin();
+      allow delete: if isAuthenticated() && isAdmin();
+    }
+
+    // Users Collection
+    // - Users can read/write their own profile
+    // - Admins can read all user profiles
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow write: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+    }
+
+    // Social Media Posts Collection
+    // - Analysts can read/write social media data
+    // - Admins have full access
+    match /socialMediaPosts/{postId} {
+      allow read: if isAuthenticated() && (isAnalyst() || isAdmin());
+      allow write: if isAuthenticated() && (isAnalyst() || isAdmin());
+    }
+
+    // Analytics Collection
+    // - Only analysts and admins can access analytics data
+    match /analytics/{documentId} {
+      allow read, write: if isAuthenticated() && (isAnalyst() || isAdmin());
+    }
+
+    // Default deny for any other collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,195 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Core Colors */
+    --color-background: #0f172a; /* slate-900 */
+    --color-foreground: #f8fafc; /* slate-50 */
+    --color-border: #334155; /* slate-700 */
+    --color-input: #1e293b; /* slate-800 */
+    --color-ring: #1e40af; /* blue-700 */
+    
+    /* Card Colors */
+    --color-card: #1e293b; /* slate-800 */
+    --color-card-foreground: #f8fafc; /* slate-50 */
+    --color-popover: #1e293b; /* slate-800 */
+    --color-popover-foreground: #f8fafc; /* slate-50 */
+    
+    /* Muted Colors */
+    --color-muted: #334155; /* slate-700 */
+    --color-muted-foreground: #94a3b8; /* slate-400 */
+    
+    /* Primary Colors */
+    --color-primary: #1e40af; /* blue-700 */
+    --color-primary-foreground: #f8fafc; /* slate-50 */
+    
+    /* Secondary Colors */
+    --color-secondary: #0f766e; /* teal-700 */
+    --color-secondary-foreground: #f8fafc; /* slate-50 */
+    
+    /* Accent Colors */
+    --color-accent: #f59e0b; /* amber-500 */
+    --color-accent-foreground: #0f172a; /* slate-900 */
+    
+    /* Success Colors */
+    --color-success: #10b981; /* emerald-500 */
+    --color-success-foreground: #f8fafc; /* slate-50 */
+    
+    /* Warning Colors */
+    --color-warning: #f59e0b; /* amber-500 */
+    --color-warning-foreground: #0f172a; /* slate-900 */
+    
+    /* Error Colors */
+    --color-error: #ef4444; /* red-500 */
+    --color-error-foreground: #f8fafc; /* slate-50 */
+    
+    /* Destructive Colors */
+    --color-destructive: #ef4444; /* red-500 */
+    --color-destructive-foreground: #f8fafc; /* slate-50 */
+    
+    /* Surface Color */
+    --color-surface: #1e293b; /* slate-800 */
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Custom scrollbar for oceanic theme */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-muted;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary rounded-full;
+  }
+::-webkit-scrollbar-thumb:hover  {
+    
+  }
+}
+
+@layer components {
+  /* Ocean-inspired animations */
+  @keyframes wave {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-4px); }
+  }
+
+  @keyframes ripple {
+    0% { transform: scale(0); opacity: 1; }
+    100% { transform: scale(4); opacity: 0; }
+  }
+
+  .animate-wave {
+    animation: wave 2s ease-in-out infinite;
+  }
+
+  .animate-ripple {
+    animation: ripple 0.6s ease-out;
+  }
+
+  /* Emergency alert styles */
+  .emergency-alert {
+    @apply bg-error text-error-foreground border-l-4 border-error;
+    box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.1);
+  }
+
+  .warning-alert {
+    @apply bg-warning text-warning-foreground border-l-4 border-warning;
+    box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.1);
+  }
+
+  /* Oceanic shadows */
+  .shadow-ocean {
+    box-shadow: 0 4px 6px -1px rgba(30, 64, 175, 0.1), 0 2px 4px -1px rgba(30, 64, 175, 0.06);
+  }
+
+  .shadow-ocean-lg {
+    box-shadow: 0 10px 15px -3px rgba(30, 64, 175, 0.1), 0 4px 6px -2px rgba(30, 64, 175, 0.05);
+  }
+
+  .shadow-ocean-xl {
+    box-shadow: 0 20px 25px -5px rgba(30, 64, 175, 0.1), 0 10px 10px -5px rgba(30, 64, 175, 0.04);
+  }
+
+  /* Navigation specific styles */
+  .nav-link {
+    @apply relative px-3 py-2 text-sm font-medium text-muted-foreground transition-colors duration-300 ease-out hover:text-foreground;
+  }
+
+  .nav-link.active {
+    @apply text-primary;
+  }
+
+  .nav-link.active::after {
+    content: '';
+    @apply absolute bottom-0 left-0 right-0 h-0.5 bg-primary;
+  }
+
+  /* Mobile menu styles */
+.mobile-menu-overlay  {
+    @apply fixed inset-0 backdrop-blur-sm z-40;
+  }
+
+  .mobile-menu {
+    @apply fixed top-0 right-0 h-full w-64 bg-card border-l border-border shadow-ocean-xl z-50 transform transition-transform duration-300 ease-out;
+  }
+
+  .mobile-menu.closed {
+    @apply translate-x-full;
+  }
+
+  .mobile-menu.open {
+    @apply translate-x-0;
+  }
+}
+
+@layer utilities {
+  /* Text utilities for data display */
+  .text-data {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Emergency button styles */
+.btn-emergency  {
+    @apply bg-error text-error-foreground font-semibold px-6 py-3 rounded-lg shadow-ocean transition-all duration-150 ease-in-out;
+  }
+
+  .btn-emergency:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 8px -1px rgba(239, 68, 68, 0.15);
+  }
+
+  /* Gradient backgrounds */
+  .bg-ocean-gradient {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  }
+
+  .bg-surface-gradient {
+    background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-card) 100%);
+  }
+
+  /* Focus styles for accessibility */
+  .focus-ocean {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background;
+  }
+
+  /* Touch-friendly sizing */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
